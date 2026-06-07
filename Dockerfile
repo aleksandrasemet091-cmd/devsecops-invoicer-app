@@ -2,9 +2,11 @@ FROM golang:1.22-alpine
 
 WORKDIR /app
 
-COPY go.mod go.sum ./
+# Копируем go.mod (go.sum может отсутствовать)
+COPY go.mod ./
 RUN go mod download
 
+# Копируем остальной код
 COPY . .
 
 RUN go build -o invoicer .
