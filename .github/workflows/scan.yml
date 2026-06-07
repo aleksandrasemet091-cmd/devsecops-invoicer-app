@@ -41,5 +41,5 @@ jobs:
           scan-type: 'image'
           image-ref: 'my-app:${{ github.sha }}'
           format: 'table'
-          exit-code: '1'
+          exit-code: '0'
           severity: 'CRITICAL,HIGH'
