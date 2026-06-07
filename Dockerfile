@@ -2,11 +2,13 @@ FROM golang:1.22-alpine
 
 WORKDIR /app
 
-# Копируем весь код (включая папку vendor)
 COPY . .
 
-# Собираем без модулей, используя vendor
-RUN CGO_ENABLED=0 GOOS=linux go build -mod=vendor -o invoicer .
+# Скачиваем зависимости
+RUN go mod download
+
+# Собираем
+RUN CGO_ENABLED=0 GOOS=linux go build -o invoicer .
 
 EXPOSE 8080
 
