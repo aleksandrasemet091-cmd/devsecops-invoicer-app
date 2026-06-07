@@ -1,0 +1,26 @@
+name: Build and Push to Yandex Cloud
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Логинимся в Яндекс.Облако используя наш секрет
+      - name: Login to Yandex Cloud Registry
+        uses: yc-actions/yc-cr-login@v3
+        with:
+          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+
+      # Собираем Docker образ
+      - name: Build Docker image
+        run: docker build -t cr.yandex/crphenfki9fvj65i9gu0/invoicer-app:${{ github.sha }} .
+
+      # Пушим образ в реестр
+      - name: Push image to Yandex Cloud
+        run: docker push cr.yandex/crphenfki9fvj65i9gu0/invoicer-app:${{ github.sha }}
