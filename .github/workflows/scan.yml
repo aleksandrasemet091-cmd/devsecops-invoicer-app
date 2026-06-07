@@ -6,7 +6,6 @@ on:
   pull_request:
     branches: [ "main" ]
 
-# ЭТО ВАЖНО! Добавляем разрешения для доступа к API
 permissions:
   contents: read
   security-events: write
@@ -31,6 +30,13 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: 'trivy-results.sarif'
+
+      - name: Generate SBOM
+        uses: anchore/sbom-action@v0
+        with:
+          path: ./
+          format: spdx-json
+          artifact-name: sbom.spdx.json
 
       - name: Build Docker image
         run: docker build -t my-app:${{ github.sha }} .
