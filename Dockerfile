@@ -6,13 +6,14 @@ WORKDIR /app
 # Копируем весь код (включая папку vendor)
 COPY . .
 
-# Компилируем приложение. -mod=vendor значит "используй зависимости из папки vendor"
+# Компилируем приложение
+# ВАЖНО: -o invoicer (а не invoker!)
 RUN CGO_ENABLED=0 GOOS=linux go build -mod=vendor -o invoicer .
 
 # Этап 2: Финальный образ
 FROM alpine:latest
 
-# Создаём непривилегированного пользователя (безопасность!)
+# Создаём непривилегированного пользователя
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
 WORKDIR /home/appuser/app
@@ -24,7 +25,7 @@ COPY --from=builder --chown=appuser:appgroup /app/invoicer .
 # Переключаемся на непривилегированного пользователя
 USER appuser
 
-# Открываем только нужный порт
+# Открываем порт
 EXPOSE 8080
 
 # Запускаем приложение
